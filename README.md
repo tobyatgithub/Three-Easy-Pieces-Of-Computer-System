@@ -45,3 +45,17 @@ The Crux of "How to provide the illusion of many CPUs"?
 - 3 process states: running, ready, and blocked
 
 ### Chapter 5 Interlude: Process API
+
+- The CPU scheduler (via calling fork()), we can see, is not deterministic. (i.e. the parent process and child process from fork() might get called and executed in any order.)
+
+- This non-determinism, as it turns out, leads to some interesting problems, particularly in multi-threaded programs; hence, we’ll see a lot more non- determinism when we study concurrency in the second part of the book.
+
+- The strangeness of `fork()` and `exec()` (and `wait()`). For now, suffice it to say that the `fork()`/`exec()` combination is a powerful way to create and manipulate processes.
+
+- The `wait()` system call allows a parent to wait for its child to complete execution.
+
+- The `exec()` family of system calls allows a child to break free from its similarity to its parent and execute an entirely new program.
+
+- A UNIX shell commonly uses fork(), wait(), and exec() to launch user commands; the separation of fork and exec enables features like input/output redirection, pipes, and other cool features, all without changing anything about the programs being run.
+
+- Process control other than fork and exec (e.g. kill) can be used to send signals to a process. However, not everyone/application is allowed to do this. Otherwise the usability and security of the system will be compromised. Thus only a validated **user** is allowed to control their own processes.
