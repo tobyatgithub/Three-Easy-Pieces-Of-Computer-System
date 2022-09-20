@@ -59,3 +59,21 @@ The Crux of "How to provide the illusion of many CPUs"?
 - A UNIX shell commonly uses fork(), wait(), and exec() to launch user commands; the separation of fork and exec enables features like input/output redirection, pipes, and other cool features, all without changing anything about the programs being run.
 
 - Process control other than fork and exec (e.g. kill) can be used to send signals to a process. However, not everyone/application is allowed to do this. Otherwise the usability and security of the system will be compromised. Thus only a validated **user** is allowed to control their own processes.
+
+### Chapter 7 Scheduling
+
+Crux of "How to develope scheduling policy":
+
+> How should we develop a basic framework for thinking about scheduling policies? What are the key assumptions? What metrics are important? What basic approaches have been used in the earliest of computer systems?
+
+- workload: Determining the workload is a critical part of building policies, and the more you know about workload, the more fine-tuned your policy can be.
+
+- (metric) turnaround time: the time at which the job completes minus the time at which the job arrived in the system
+
+- (metric) response time: the time from when the job arrives in a system to the first time it is scheduled
+
+- (policy) Shortest Job First (SJF): it runs the shortest job first, then the next shortest, and so on.
+
+- (policy) Shortest Time-to-Completion First (STCF): Any time a new job enters the system, the STCF scheduler determines which of the re- maining jobs (including the new job) has the least time left, and schedules that one.
+
+- (policy) round robin /time-slicing: instead of running jobs to completion, RR runs a job for a time slice (sometimes called a scheduling quantum) and then switches to the next job in the run queue. (make scheduling quantum big to reduce the context-switching cost.)
