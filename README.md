@@ -77,3 +77,34 @@ Crux of "How to develope scheduling policy":
 - (policy) Shortest Time-to-Completion First (STCF): Any time a new job enters the system, the STCF scheduler determines which of the re- maining jobs (including the new job) has the least time left, and schedules that one.
 
 - (policy) round robin /time-slicing: instead of running jobs to completion, RR runs a job for a time slice (sometimes called a scheduling quantum) and then switches to the next job in the run queue. (make scheduling quantum big to reduce the context-switching cost.)
+
+
+### Chapter 8 The Multi-level feedback queue
+
+Crux of "How to schedule without perfect knowledge?"
+
+> Given that we in general do not know anything about a process, how can we build a scheduler to achivev these goals? How can the scheduler learn, as the system runs, the characteristics of the jobs it is running, and thus make better scheduling decisions? (*esp. without a priori knowledge of job length?)
+
+- There are two overall goals for MLFQ: 1. optimize turnaround time (~shorter jobs first); 2. minimize response time (~ Round Robin).
+
+- MLFQ's answer: learn from history.
+    - the MLFQ has a number of distinct queues, each assigned a different priority level
+    - MLFQ uses priorities to decide which job should run at a given time
+    - Rule 1: If Priority(A) > Priority(B), A runs (B doesn’t).
+    - Rule 2: If Priority(A) = Priority(B), A & B run in RR.
+    - Rather than giving a fixed priority to each job, MLFQ varies the priority of a job based on its observed behavior. 
+    - Rule 3: When a job enters the system, it is placed at the highest priority (the topmost queue).
+    - Rule 4a: If a job uses up an entire time slice while running, its priority is reduced (i.e., it moves down one queue).
+    - Rule 4b: If a job gives up the CPU before the time slice is up, it stays at the same priority level.
+    - because it doesn’t know whether a job will be a short job or a long-running job, it first assumes it might be a short job, thus giving the job high priority. If it actually is a short job, it will run quickly and complete; if it is not a short job, it will slowly move down the queues, and thus soon prove itself to be a long-running more batch-like process. In this manner, MLFQ approximates SJF.
+    - FLAWS: 
+        1. First, there is the problem of starvation: if there are “too many” in- teractive jobs in the system, they will combine to consume all CPU time, and thus long-running jobs will never receive any CPU time (they starve).
+        2. Second, a smart user could rewrite their program to game the scheduler (e.g. before the time slice is over, issue an I/O operation (to some file you don’t care about) and thus relinquish the CPU)
+        3. a program may change its behavior over time; what was CPU- bound may transition to a phase of interactivity (but will remain in lowest priority in our current design.)
+    
+- MLFQ improve: The Priority Boost
+    - "Reshuffle"Rule 5: After some time period S, move all the jobs in the system to the topmost queue.
+    - Our new rule solves two problems at once. First, processes are guar- anteed not to starve: by sitting in the top queue, a job will share the CPU with other high-priority jobs in a round-robin fashion, and thus eventu- ally receive service. Second, if a CPU-bound job has become interactive, the scheduler treats it properly once it has received the priority boost.
+    - However, it is very hard and tricky to set the time period S correct. If it is set too high, long-running jobs could starve; too low, and interactive jobs may not get a proper share of the CPU. "voo-doo constant", "magic number".
+
+    
