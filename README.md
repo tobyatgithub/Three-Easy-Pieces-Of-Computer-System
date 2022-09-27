@@ -128,4 +128,25 @@ Crux: How to share the CPU proportionally.
 
 - lottery ticket: a basic and powerful mechanisms to represent a proportion of ownership.
 
-- ticket currency: Currency allows a user with a set of tick- ets to allocate tickets among their own jobs in whatever currency they would like; the system then automatically converts said currency into the correct global value.
+- ticket currency: Currency allows a user with a set of tickets to allocate tickets among their own jobs in whatever currency they would like; the system then automatically converts said currency into the correct global value. (~each process can set its own ticket amount and distribution, the system will then convert them to system's ticket system.)
+
+- ticket transfer. With transfers, a process can temporarily hand off its tickets to another process. This ability is especially useful in a client/server setting, where a client process sends a message to a server asking it to do some work on the client’s behalf.
+
+- ticket inflation can sometimes be a useful technique. With inflation, a process can temporarily raise or lower the number of tickets it owns. For exmaple,  if any one process knows it needs more CPU time, it can boost its ticket value as a way to reflect that need to the system, all without communicating with any other processes. (in a trusted environment only)
+
+- stride scheduling - 
+
+- CFS - The Linux Completely Fair Scheduler: implements fair-share scheduling, but does so in a highly efficient and scalable manner.
+    - Its goal is simple: to fairly divide a CPU evenly among all competing processes. It does so through a simple counting-based technique known as virtual runtime (vruntime).
+    - **sched_latency**. CFS uses this value to determine how long one process should run before considering a switch (effectively determining its time slice but in a dynamic fashion). And it is lower bounded by **min_granularity** to avoid to frequent switch if there are two many processes.
+    - niceness (-20 ~ + 19) - CFS also enables controls over process priority, enabling users or admin- istrators to give some processes a higher share of the CPU. Positive nice values imply lower priority and negative values imply higher priority; when you’re too nice, you just don’t get as much (scheduling) attention, alas.
+
+- even after aggressive opti- mization, scheduling uses about 5% of overall datacenter CPU time. Reducing that overhead as much as possible is thus a key goal in modern scheduler architecture.
+
+- Lottery uses randomness in a clever way to achieve proportional share; stride does so deter- ministically. CFS, the only “real” scheduler discussed in this chapter, is a bit like weighted round-robin with dynamic time slices, but built to scale and perform well under load; to our knowledge, it is the most widely used fair-share scheduler in existence today.
+
+Lottery ~ randomness to achieve proportional share
+-> problem with not deliver the exact right proportions over short time scales
+Stride scheduing ~ a deterministic fair-share scheduler (where stride = inverse of the tickets, i.e. pre-calculate to ensure the exact proportion)
+-> problem with a global state (thus making inserting new jobs very difficult)
+Completely Fair Scheduler ~ use vruntime, sched_latency, min_granularity, and niceness + red-black tree to achieve a weighted round-robin with dynamic time slices that build to perform well under load.
