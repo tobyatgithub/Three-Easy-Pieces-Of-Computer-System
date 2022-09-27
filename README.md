@@ -102,9 +102,30 @@ Crux of "How to schedule without perfect knowledge?"
         2. Second, a smart user could rewrite their program to game the scheduler (e.g. before the time slice is over, issue an I/O operation (to some file you don’t care about) and thus relinquish the CPU)
         3. a program may change its behavior over time; what was CPU- bound may transition to a phase of interactivity (but will remain in lowest priority in our current design.)
     
-- MLFQ improve: The Priority Boost
+- MLFQ2 improve: The Priority Boost
     - "Reshuffle"Rule 5: After some time period S, move all the jobs in the system to the topmost queue.
     - Our new rule solves two problems at once. First, processes are guar- anteed not to starve: by sitting in the top queue, a job will share the CPU with other high-priority jobs in a round-robin fashion, and thus eventu- ally receive service. Second, if a CPU-bound job has become interactive, the scheduler treats it properly once it has received the priority boost.
     - However, it is very hard and tricky to set the time period S correct. If it is set too high, long-running jobs could starve; too low, and interactive jobs may not get a proper share of the CPU. "voo-doo constant", "magic number".
 
-    
+- MLFQ3 improve: Better Accounting.
+    - goal = to prevent gaming of our scheduler
+    - idea = Instead of forgetting how much of a time slice a pro- cess used at a given level, the scheduler should keep track; once a process has used its allotment, it is demoted to the next priority queue. Whether it uses the time slice in one long burst or many small ones does not matter.
+    - Rule 4: Once a job uses up its time allotment at a given level (regardless of how many times it has given up the CPU), its priority is reduced (i.e., it moves down one queue).
+
+- Advice: 
+    As the operating system rarely knows what is best for each and every process of the system, it is often useful to provide interfaces to allow users or administrators to provide some hints to the OS. We often call such hints advice, as the OS need not necessarily pay attention to it, but rather might take the advice into account in order to make a better decision.
+
+
+### Chapter 9 Scheduling: Proportional Share
+
+Crux: How to share the CPU proportionally.
+
+- Proportional-share is based around a simple concept: instead of optimizing for turnaround or response time, a scheduler might instead try to guarantee that each job obtain a certain percentage of CPU time. (~ fairness)
+
+- Lottery scheduling: every so often, hold a lottery to determine which process should get to run next; processes that should run more often should be given more chances to win the lottery
+
+- One of the most beautiful aspects of lottery scheduling is its use of randomness. When you have to make a decision, using such a randomized approach is often a robust and simple way of doing so.
+
+- lottery ticket: a basic and powerful mechanisms to represent a proportion of ownership.
+
+- ticket currency: Currency allows a user with a set of tick- ets to allocate tickets among their own jobs in whatever currency they would like; the system then automatically converts said currency into the correct global value.
