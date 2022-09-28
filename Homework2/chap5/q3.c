@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     }
     else if (rc != 0) // parent
     {
-        wait(NULL);
+        wait(NULL); // sleep(1); or do some heavy work
         printf("hello, i am parent of %d (pid:%d)\n", rc, (int)getpid());
         printf("parent: goodbye.\n");
     }

@@ -74,6 +74,6 @@ Crux of "How to develope scheduling policy":
 
 - (policy) Shortest Job First (SJF): it runs the shortest job first, then the next shortest, and so on.
 
-- (policy) Shortest Time-to-Completion First (STCF): Any time a new job enters the system, the STCF scheduler determines which of the re- maining jobs (including the new job) has the least time left, and schedules that one.
+- (policy) Shortest Time-to-Completion First (STCF): Any time a new job enters the system, the STCF scheduler determines which of the remaining jobs (including the new job) has the least time left, and schedules that one. (could pauses the current heavy load work, and switch context to the shorter ones.)
 
 - (policy) round robin /time-slicing: instead of running jobs to completion, RR runs a job for a time slice (sometimes called a scheduling quantum) and then switches to the next job in the run queue. (make scheduling quantum big to reduce the context-switching cost.)
