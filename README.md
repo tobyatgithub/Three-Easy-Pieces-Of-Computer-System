@@ -77,3 +77,76 @@ Crux of "How to develope scheduling policy":
 - (policy) Shortest Time-to-Completion First (STCF): Any time a new job enters the system, the STCF scheduler determines which of the remaining jobs (including the new job) has the least time left, and schedules that one. (could pauses the current heavy load work, and switch context to the shorter ones.)
 
 - (policy) round robin /time-slicing: instead of running jobs to completion, RR runs a job for a time slice (sometimes called a scheduling quantum) and then switches to the next job in the run queue. (make scheduling quantum big to reduce the context-switching cost.)
+
+
+### Chapter 8 The Multi-level feedback queue
+
+Crux of "How to schedule without perfect knowledge?"
+
+> Given that we in general do not know anything about a process, how can we build a scheduler to achivev these goals? How can the scheduler learn, as the system runs, the characteristics of the jobs it is running, and thus make better scheduling decisions? (*esp. without a priori knowledge of job length?)
+
+- There are two overall goals for MLFQ: 1. optimize turnaround time (~shorter jobs first); 2. minimize response time (~ Round Robin).
+
+- MLFQ's answer: learn from history.
+    - the MLFQ has a number of distinct queues, each assigned a different priority level
+    - MLFQ uses priorities to decide which job should run at a given time
+    - Rule 1: If Priority(A) > Priority(B), A runs (B doesn’t).
+    - Rule 2: If Priority(A) = Priority(B), A & B run in RR.
+    - Rather than giving a fixed priority to each job, MLFQ varies the priority of a job based on its observed behavior. 
+    - Rule 3: When a job enters the system, it is placed at the highest priority (the topmost queue).
+    - Rule 4a: If a job uses up an entire time slice while running, its priority is reduced (i.e., it moves down one queue).
+    - Rule 4b: If a job gives up the CPU before the time slice is up, it stays at the same priority level.
+    - because it doesn’t know whether a job will be a short job or a long-running job, it first assumes it might be a short job, thus giving the job high priority. If it actually is a short job, it will run quickly and complete; if it is not a short job, it will slowly move down the queues, and thus soon prove itself to be a long-running more batch-like process. In this manner, MLFQ approximates SJF.
+    - FLAWS: 
+        1. First, there is the problem of starvation: if there are “too many” in- teractive jobs in the system, they will combine to consume all CPU time, and thus long-running jobs will never receive any CPU time (they starve).
+        2. Second, a smart user could rewrite their program to game the scheduler (e.g. before the time slice is over, issue an I/O operation (to some file you don’t care about) and thus relinquish the CPU)
+        3. a program may change its behavior over time; what was CPU- bound may transition to a phase of interactivity (but will remain in lowest priority in our current design.)
+    
+- MLFQ2 improve: The Priority Boost
+    - "Reshuffle"Rule 5: After some time period S, move all the jobs in the system to the topmost queue.
+    - Our new rule solves two problems at once. First, processes are guar- anteed not to starve: by sitting in the top queue, a job will share the CPU with other high-priority jobs in a round-robin fashion, and thus eventu- ally receive service. Second, if a CPU-bound job has become interactive, the scheduler treats it properly once it has received the priority boost.
+    - However, it is very hard and tricky to set the time period S correct. If it is set too high, long-running jobs could starve; too low, and interactive jobs may not get a proper share of the CPU. "voo-doo constant", "magic number".
+
+- MLFQ3 improve: Better Accounting.
+    - goal = to prevent gaming of our scheduler
+    - idea = Instead of forgetting how much of a time slice a pro- cess used at a given level, the scheduler should keep track; once a process has used its allotment, it is demoted to the next priority queue. Whether it uses the time slice in one long burst or many small ones does not matter.
+    - Rule 4: Once a job uses up its time allotment at a given level (regardless of how many times it has given up the CPU), its priority is reduced (i.e., it moves down one queue).
+
+- Advice: 
+    As the operating system rarely knows what is best for each and every process of the system, it is often useful to provide interfaces to allow users or administrators to provide some hints to the OS. We often call such hints advice, as the OS need not necessarily pay attention to it, but rather might take the advice into account in order to make a better decision.
+
+
+### Chapter 9 Scheduling: Proportional Share
+
+Crux: How to share the CPU proportionally.
+
+- Proportional-share is based around a simple concept: instead of optimizing for turnaround or response time, a scheduler might instead try to guarantee that each job obtain a certain percentage of CPU time. (~ fairness)
+
+- Lottery scheduling: every so often, hold a lottery to determine which process should get to run next; processes that should run more often should be given more chances to win the lottery
+
+- One of the most beautiful aspects of lottery scheduling is its use of randomness. When you have to make a decision, using such a randomized approach is often a robust and simple way of doing so.
+
+- lottery ticket: a basic and powerful mechanisms to represent a proportion of ownership.
+
+- ticket currency: Currency allows a user with a set of tickets to allocate tickets among their own jobs in whatever currency they would like; the system then automatically converts said currency into the correct global value. (~each process can set its own ticket amount and distribution, the system will then convert them to system's ticket system.)
+
+- ticket transfer. With transfers, a process can temporarily hand off its tickets to another process. This ability is especially useful in a client/server setting, where a client process sends a message to a server asking it to do some work on the client’s behalf.
+
+- ticket inflation can sometimes be a useful technique. With inflation, a process can temporarily raise or lower the number of tickets it owns. For exmaple,  if any one process knows it needs more CPU time, it can boost its ticket value as a way to reflect that need to the system, all without communicating with any other processes. (in a trusted environment only)
+
+- stride scheduling - 
+
+- CFS - The Linux Completely Fair Scheduler: implements fair-share scheduling, but does so in a highly efficient and scalable manner.
+    - Its goal is simple: to fairly divide a CPU evenly among all competing processes. It does so through a simple counting-based technique known as virtual runtime (vruntime).
+    - **sched_latency**. CFS uses this value to determine how long one process should run before considering a switch (effectively determining its time slice but in a dynamic fashion). And it is lower bounded by **min_granularity** to avoid to frequent switch if there are two many processes.
+    - niceness (-20 ~ + 19) - CFS also enables controls over process priority, enabling users or admin- istrators to give some processes a higher share of the CPU. Positive nice values imply lower priority and negative values imply higher priority; when you’re too nice, you just don’t get as much (scheduling) attention, alas.
+
+- even after aggressive opti- mization, scheduling uses about 5% of overall datacenter CPU time. Reducing that overhead as much as possible is thus a key goal in modern scheduler architecture.
+
+- Lottery uses randomness in a clever way to achieve proportional share; stride does so deter- ministically. CFS, the only “real” scheduler discussed in this chapter, is a bit like weighted round-robin with dynamic time slices, but built to scale and perform well under load; to our knowledge, it is the most widely used fair-share scheduler in existence today.
+
+Lottery ~ randomness to achieve proportional share
+-> problem with not deliver the exact right proportions over short time scales
+Stride scheduing ~ a deterministic fair-share scheduler (where stride = inverse of the tickets, i.e. pre-calculate to ensure the exact proportion)
+-> problem with a global state (thus making inserting new jobs very difficult)
+Completely Fair Scheduler ~ use vruntime, sched_latency, min_granularity, and niceness + red-black tree to achieve a weighted round-robin with dynamic time slices that build to perform well under load.
