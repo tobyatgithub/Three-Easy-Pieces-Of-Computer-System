@@ -226,6 +226,23 @@ Both O(1) and CFS use multiple queues, whereas BFS uses a single queue, showing 
   - efficiency: The OS should strive to make the virtualization as efficient as possible, both in terms of time (i.e., not mak- ing programs run much more slowly) and space (i.e., not using too much memory for structures needed to support virtualization)
   - protection: The OS should make sure to protect processes from one another as well as the OS itself from process.
 
+---
+
+### Chapter 14, Interlude: Memory API
+
+Toby: this chapter mainly talks about many practical potential errors and mistakes in c coding that is related to memory management (`malloc(), free(), `)
+
+> Crux: In UNIX/C programs, understanding how to allocate and manage memory is critical in building robust and reliable software. What interfaces are commonly used? What mistakes should be avoided?
+
+- Two types of memory (stack and heap):
+
+  - stack: allocations and deallocations of it are managed implicitly by the compiler for you, the programmer; for this reason it is sometimes called **automatic** memory. (e.g. `int x;` is a stack memory declaration.)
+  - heap: all allocations and deallocations are **explicitly** handled by you, the programmer. (e.g. `int *x = (int *) malloc(sizeof(int))`)
+
+- memory leak: it occurs when you forget to free memory, thus in long-running apps or systems, this will eventually lead you to run out of memory, and then a restart is required.
+
+---
+
 ### Chapter 15, Address Translation Mechanism
 
 Crux: How to efficiently and flexibly virtualize memory?
