@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]) {
     int n[1000000];
     int i;
-    printf("hello, I am ruuning with (pid:%d)\n", (int)getpid());
+    printf("hello, I am running with (pid:%d)\n", (int)getpid());
     while (1)
     {
         for (i = 0; i < 1000000; i++) {
