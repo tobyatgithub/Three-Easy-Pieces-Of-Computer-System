@@ -213,6 +213,19 @@ Interestingly, in the Linux community, no common solution has approached to buil
 
 Both O(1) and CFS use multiple queues, whereas BFS uses a single queue, showing that both approaches can be successful. O(1) ~ based on priority; CFS more like stride scheduling, do a deterministic proportional-share. BFS is based on Earliest Eligible Virtual Deadline First.
 
+### Chapter 13, The Abstraction: Address Spaces
+
+- Multiprogramming and time sharing: The notion of interactivity became important, as many users might be concurrently using a machine, each waiting for (or hoping for) a timely response from their currently-executing tasks.
+
+- Protection: In particular, allow- ing multiple programs to reside concurrently in memory makes **protection** an important issue; you don’t want a process to be able to read, or worse, write some other process’s memory.
+
+- Address space (code, stack, heap): However, we have to keep those pesky users in mind, and doing so requires the OS to create an easy to use abstraction of physical memory. We call this abstraction the address space, and it is the running program’s view of memory in the system. The address space of a process contains all of the memory state of the running program.
+
+- Goals for virtualizing memory:
+  - transparency: (The OS should implement virtual memory in a way that is invisible to the running program. / under the hood);
+  - efficiency: The OS should strive to make the virtualization as efficient as possible, both in terms of time (i.e., not mak- ing programs run much more slowly) and space (i.e., not using too much memory for structures needed to support virtualization)
+  - protection: The OS should make sure to protect processes from one another as well as the OS itself from process.
+
 ### Chapter 15, Address Translation Mechanism
 
 Crux: How to efficiently and flexibly virtualize memory?
