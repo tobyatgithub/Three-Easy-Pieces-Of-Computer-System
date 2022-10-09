@@ -253,8 +253,6 @@ CPU Mechanism - **limited direct execution (LDE)**: for the most part, let the p
 
 Memory mechanism - **hardware-based address translation**: With address translation, the **hardware** transforms each memory access (e.g., an instruction fetch, load, or store), changing the virtual address provided by the instruction to a physical address where the desired information is actually located.
 
-Temp Assumption 1 - user’s address space must be placed contiguously in physical memory.
-
-Temp Assumption 2 - for simplicity, that the size of the address space is not too big, \< the size of physical memory.
-
 ??? interposition and interface?? page 3
+
+Privileged mode vs. user mode: on CPU virtualization, we require two different CPU modes. The OS runs in privileged mode (or kernel mode), where it has access to the entire machine; applications run in user mode, where they are limited in what they can do.
