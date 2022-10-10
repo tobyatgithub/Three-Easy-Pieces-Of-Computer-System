@@ -262,3 +262,9 @@ Privileged mode vs. user mode: on CPU virtualization, we require two different C
 Crux: How to support a large address space?
 
 - Segmentation: instead of having just one base and bounds pair in our MMU, why not have a base and bounds pair per logical segment of the address space? A segment is just a contiguous portion of the address space of a particular length, and it allows the OS to place each (code, stack, heap) in different parts of the physical memory, and thus avoid filling physical memory with unused virtual address space.
+
+### Chapter 17, Free Space Management
+
+Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
+
+- paging: divide space into fixed-sized units.
