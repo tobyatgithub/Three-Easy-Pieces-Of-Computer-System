@@ -268,3 +268,5 @@ Crux: How to support a large address space?
 Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
 
 - paging: divide space into fixed-sized units.
+
+coalesce
