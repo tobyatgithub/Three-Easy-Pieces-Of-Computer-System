@@ -259,14 +259,47 @@ Privileged mode vs. user mode: on CPU virtualization, we require two different C
 
 ### Chapter 16, Segmentation
 
-Crux: How to support a large address space?
+> Crux: How to support a large address space?
 
 - Segmentation: instead of having just one base and bounds pair in our MMU, why not have a base and bounds pair per logical segment of the address space? A segment is just a contiguous portion of the address space of a particular length, and it allows the OS to place each (code, stack, heap) in different parts of the physical memory, and thus avoid filling physical memory with unused virtual address space.
 
 ### Chapter 17, Free Space Management
 
-Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
+> Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
 
 - paging: divide space into fixed-sized units.
 
-coalesce
+- coalesce: important! as it greatly affect how effective our free space management will be. The basic idea is simple: if we have two free space next to each other, merge them into one. Keep doing this operation until there's no more free space that can be merged.
+
+### Chapter 18: Paging
+
+Usually there are two approaches when solving most space-management related problems:
+
+1. chop things up into variable-sized pieces (e.g. segmentation in virtual memory).
+
+- con: fragment (and thus hard to scale and maintain)
+
+2. chop up things into fixed-size pieces. (e.g. paging in virtual memory).
+
+- pro1: flexibility, which means the system will be able to support the abstraction of an address space effectively, regardless of how a process uses the address space (e.g. no need for remembering heap and stack grow directions).
+
+- pro2: simplicity when allocating. as we just need to figure out how many pages one app shall have (from the free list.)
+
+notice here, the page table is a per-process data structure. i.e. each process will have their own page table.
+
+> Crux: How can we virtualize memory with pages, so as to avoid the problem of segmentation? What are some basic techniques? How do we make those techniques work well, with minimal space and time overheads?
+
+- Where are page tables stored?
+  -> page tables can be stored in OS virtual memory and even swapped to disk given it can be very very huge in some cases (multiple MB)
+
+- What's actually in the page table?
+  -> a virtual mapping from virtual page numbers to physical address. We can use array or hash map or many different data structures.
+  -> valid bit, invalid bit, protection bit, present bit, dirty bit, reference/accessed bit.
+
+### Chapter 19: Faster Paging (TLBs, a translation-lookaside buffer)
+
+Paging requires a large amount of mapping info. Going to memory for translation information before every instruction fetch or explicit load or store is prohibitively slow.
+
+> Crux: How to speed up address translation?
+
+-> Cache it: a translation-lookaside buffer, or TLB [CG68, C95]. A TLB is part of the chip’s memory-management unit (MMU), and is simply a hardware cache of popular virtual-to-physical address translations
