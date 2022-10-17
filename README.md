@@ -298,8 +298,18 @@ notice here, the page table is a per-process data structure. i.e. each process w
 
 ### Chapter 19: Faster Paging (TLBs, a translation-lookaside buffer)
 
+??? the calculations of these two chapters bits, up to xxx MB or GB???
+
+??? randomly accessed? why it is good and fast???
+
 Paging requires a large amount of mapping info. Going to memory for translation information before every instruction fetch or explicit load or store is prohibitively slow.
 
 > Crux: How to speed up address translation?
 
 -> Cache it: a translation-lookaside buffer, or TLB [CG68, C95]. A TLB is part of the chip’s memory-management unit (MMU), and is simply a hardware cache of popular virtual-to-physical address translations
+
+fully associative: a typical TLB might have 32, 64, or 128 entries and be fully associative, which means that any given translation can be anywhere in the TLB, and the hardware will search the entire TLB in parallel to find the desired translation.
+
+cache replacement: LRU (least recently used) policy, random policy
+
+bottleneck: TLB access can easily become a bottleneck in the CPU pipeline
