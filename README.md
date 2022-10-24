@@ -313,3 +313,18 @@ fully associative: a typical TLB might have 32, 64, or 128 entries and be fully 
 cache replacement: LRU (least recently used) policy, random policy
 
 bottleneck: TLB access can easily become a bottleneck in the CPU pipeline
+
+### Chapter 20: Paging with smaller tables
+
+Crux: Simple array-based page tables (usually called linear page tables) are too big, taking up far too much memory on typical systems. How to make page tables smaller?
+
+Solution 1 - Bigger tables: 
+
+This type of large page usage is common in database management systems and other high-end commercial applications. The main reason for multiple page sizes is not to save page table space, however; it is to reduce pressure on the TLB, enabling a program to access more of its address space without suffering from too many TLB misses.
+
+Problem - internal fragmentation (big pages lead to waste within each page.)
+
+Solution 2 - Hybrid Paging + Segmentation: 
+
+we use the base not to point to the segment itself but rather to hold the physical address of the page table of that
+segment. The bounds register is used to indicate the end of the page table
