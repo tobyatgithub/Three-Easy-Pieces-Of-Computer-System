@@ -20,4 +20,8 @@ plt.plot(x, y10000)
 plt.plot(x, y12000)
 plt.plot(x, y14000)
 
+plt.legend(['1024MB', '4000MB', '6000MB',
+            '8000MB', '10000MB', '12000MB', '14000MB'])
 
+plt.margins(0.2)
+plt.show()

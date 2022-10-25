@@ -127,6 +127,7 @@ loop 1 in 90113.72 ms (bandwidth: 155.36 MB/s)
 loop 2 in 87154.54 ms (bandwidth: 160.63 MB/s)
 ```
 
+![](Figure_1.png)
 
 ## Question
 
