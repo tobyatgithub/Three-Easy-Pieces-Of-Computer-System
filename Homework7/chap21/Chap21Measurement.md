@@ -63,7 +63,7 @@ The value in `swpd` and `so` matches pretty nicely.
 **Answer:**
 (restart the vm and got very different result,) the `vmstat 1` printouts are saved in the `./mem14000.md` for reference. From which we can see that, user time increases at first but quickly decrease to 1. `bi`, `bo`, (block in and out), `in` and `cs` (interrupts per second and context switches per second) increase significantly.
 
-## Question
+## Question 5
 
 >  Now let’s examine performance. Pick an input for `mem` that comfortably fits in memory (say `4000` if the amount of memory on the system is 8 GB). How long does loop 0 take (and subsequent loops 1, 2, etc.)? Now pick a size comfortably beyond the size of memory (say `12000` again assuming 8 GB of memory). How long do the loops take here? How do the bandwidth numbers compare? How different is performance when constantly swapping versus fitting everything comfortably in memory? Can you make a graph, with the size of memory used by `mem` on the x-axis, and the bandwidth of accessing said memory on the y-axis? Finally, how does the performance of the first loop compare to that of subsequent loops, for both the case where everything fits in memory and where it doesn’t?
 
@@ -129,20 +129,14 @@ loop 2 in 87154.54 ms (bandwidth: 160.63 MB/s)
 
 ![](Figure_1.png)
 
-## Question
+## Question 6
 
-> QQQ
+> Swap space isn’t infinite. You can use the tool `swapon` with the `-s` flag to see how much swap space is available. What happens if you try to run `mem` with increasingly large values, beyond what seems to be available in swap? At what point does the memory allocation fail?
 
-**Answer:**
-
-## Question
-
-> QQQ
 
 **Answer:**
 
-## Question
+In my case, `./mem 15000` will fail. (sometimes `./mem 14000` fails after several rounds.)
 
-> QQQ
+I believe it depends on a certain percentage of the physcial memory + swap memory.
 
-**Answer:**
