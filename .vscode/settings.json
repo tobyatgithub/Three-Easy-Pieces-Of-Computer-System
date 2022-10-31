@@ -2,5 +2,6 @@
     "files.associations": {
         "stdlib.h": "c",
         "stdio.h": "c"
-    }
+    },
+    "python.pythonPath": "/Users/toby/anaconda3/envs/py39/bin/python"
 }
