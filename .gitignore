@@ -2,3 +2,6 @@
 .vs_code
 */.idea
 */cmake-build-*
+ls-trace.txt
+vpn.txt
+result.txt

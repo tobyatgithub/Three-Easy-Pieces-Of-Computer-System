@@ -313,3 +313,43 @@ fully associative: a typical TLB might have 32, 64, or 128 entries and be fully 
 cache replacement: LRU (least recently used) policy, random policy
 
 bottleneck: TLB access can easily become a bottleneck in the CPU pipeline
+
+Cache - spatial locality: the idea is that if a program accesses memory at address x, it will likely soon access memory near x. 
+Even though this is the first time the program accesses the array, the TLB improves performance due to spatial locality. The elements of the array are packed tightly into pages (i.e., they are close to one another in space), and thus only the first access to an element on a page yields a TLB miss.
+
+Cache - temporal locality: an instruction or data item that has been recently accessed will likely be re-accessed soon in the future 
+
+### Chapter 20: Paging with smaller tables
+
+Crux: Simple array-based page tables (usually called linear page tables) are too big, taking up far too much memory on typical systems. How to make page tables smaller?
+
+Solution 1 - Bigger tables: 
+
+This type of large page usage is common in database management systems and other high-end commercial applications. The main reason for multiple page sizes is not to save page table space, however; it is to reduce pressure on the TLB, enabling a program to access more of its address space without suffering from too many TLB misses.
+
+Problem - internal fragmentation (big pages lead to waste within each page.)
+
+Solution 2 - Hybrid Paging + Segmentation: 
+
+we use the base not to point to the segment itself but rather to hold the physical address of the page table of that
+segment. The bounds register is used to indicate the end of the page table
+
+Solution 3 - Multi level page tables:
+
+First, chop up the page table into page-sized units; then, if an entire page of page-table entries (PTEs) is invalid, don’t allocate that page of the page table at all. To track whether a page of the page table is valid (and if valid, where it
+is in memory), use a new structure, called the page directory.
+
+pro - 1. it only allocates page-table space in proportion to the amount of address space you are using. 2. very flexible in address allocating (compared to you will need a continuous physical space in a linear paging design,) we can allocate page-table pages wherever in the physical memory.
+
+con - 1. on a TLB miss, two loads from memory will be required (we trade this time off to get better space performance.) 2. complexity in hardware and os lookup handling.
+
+Solution 4 - Inverted Page Tables:
+
+Here, instead of having many page tables (one per process of the system), we keep a single page table that has an entry for each physical page of the system.
+
+### Chap 21: Beyond Physical Memory: Mechanisms
+
+Motivate: We will now relax these big assumptions, and assume that we wish to support many concurrently-running large address spaces. To support large address spaces, the OS will need a place to stash away portions of address spaces that currently aren’t in great demand.
+
+Crux: How can the OS make use of a larger, slower device to transparently provide the illusion of a large virtual address space?
+
