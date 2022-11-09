@@ -386,4 +386,8 @@ Three levels' of effect:
 - os(swap policy)
 - application(thrashing)
 
-And multi-level page table:
+Page fault initialized from app where it starts and demands page -> then the os will move on to check the page table -> if exists, return. Another wise, os will move forward and try to get the demanded page (where hardware's tlb comes to assistance) -> after getting the demanded page, the page table will need to store it, and if there're no more free space in the page table, the os will need to decide which old page to evict (swap policy).
+
+Reflecting on the applications, page fault will result a slow run or low responding. It might cause "thrashing" if it gets worse (due to limited resources available). And since the swapping involves I/O process, the CPU scheduler will also adjust accordingly, making page fault affect app on all three levels (demand paging, thrashing, and scheduling).
+
+- multi-level page table
