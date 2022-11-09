@@ -353,8 +353,37 @@ Motivate: We will now relax these big assumptions, and assume that we wish to su
 
 Crux: How can the OS make use of a larger, slower device to transparently provide the illusion of a large virtual address space?
 
+### Chap 22: Beyond Physical Memory: Policies
+
+Spatial locality: locality based on nearby location (i.e. nearby address is likely being called)
+Temporal locality: locality based on reuse (i.e. same address being called several timers)
+
+Some common policies:
+
+- Most Frequently Used (MFU) / Least Frequently Used (LFU)
+- Most Recently Used (MRU) / Least Recently Used (LRU)
+- Optimal (Belady algorithm)
+- First In First Out (FIFO)
+- Random
+- Working Set Reduction: reduce the set of process via admission control
+- Page Fault Frequency - grow/shrink number of frames as a function of fault rate (i.e. dynamic assign)
+
+Scan-resistance: Scan resistance is about keeping the cache “good” when faced with large scans. A scan will access lots of elements, but many will not be accessed again. For example, an LRU is a bad choice for scans because it will insert every accessed element, but many won’t be accessed again. (https://misfra.me/2017/01/03/caching-and-crashing-in-lm2/#:~:text=Scan%20resistance%20is%20about%20keeping,won't%20be%20accessed%20again.)
+
+Thrashing: is when the system spends most of its time servicing page faults, little time doing useful work.
+
 ### Chap 23: Complete VIrtual Memory Systems
 
 - key elements: page-table designs, interactions with the TLB, abd eviction strategies.
 
 - The kernel is mapped into each address space: 1. make swap pages much easier (vs. locate kernel entirely in physical memory) 2. make it easy (vs. kernel have its own address space.) 3. now kernel appears almost like a library to applications (good).
+
+### Mid-check-mastery: page fault.
+
+Three levels' of effect:
+
+- hardware（tlb）
+- os(swap policy)
+- application(thrashing)
+
+And multi-level page table:
