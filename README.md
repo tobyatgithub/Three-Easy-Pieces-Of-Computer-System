@@ -391,3 +391,20 @@ Page fault initialized from app where it starts and demands page -> then the os 
 Reflecting on the applications, page fault will result a slow run or low responding. It might cause "thrashing" if it gets worse (due to limited resources available). And since the swapping involves I/O process, the CPU scheduler will also adjust accordingly, making page fault affect app on all three levels (demand paging, thrashing, and scheduling).
 
 - multi-level page table
+
+
+### Chapter 24 Concurrency: intro to thread
+
+multi-thread vs. multi-process: Each thread is very much like a separate process, except for one difference: thread share the same address space and thus can access the same data. (Thus no need to switch which page table we are using when switching between threads.) Another difference is stack, where in multi-threads you will have multiple stacks in the code-heap-stack structure.
+
+Why multi-threads?
+1. parallelism: potential of speeding up the process considerably. 
+2. avoid blocking program due to slow I/O: help the scheduler to optimize the process by switching between threads (within one single program/process).
+
+Race condition (Data race) - costed by shared data and uncontrolled scheduling
+
+-> solution: 
+critical section - a piece of code that access a shared variable and must not be concurrently executed by more than one thread.
+
+mutual exclusion: guarantees that if one thread is executing within the critical section, the others will be prevented from doing so (lock?)
+
