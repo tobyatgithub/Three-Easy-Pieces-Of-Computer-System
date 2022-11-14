@@ -393,7 +393,7 @@ Reflecting on the applications, page fault will result a slow run or low respond
 - multi-level page table
 
 
-### Chapter 24 Concurrency: intro to thread
+### Chapter 26 Concurrency: intro to thread
 
 multi-thread vs. multi-process: Each thread is very much like a separate process, except for one difference: thread share the same address space and thus can access the same data. (Thus no need to switch which page table we are using when switching between threads.) Another difference is stack, where in multi-threads you will have multiple stacks in the code-heap-stack structure.
 
