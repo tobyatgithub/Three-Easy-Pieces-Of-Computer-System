@@ -183,33 +183,33 @@ The final value will be 6. And each thread loop three times because `bx` starts 
 > Run with random interrupt intervals: `./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0` with different seeds (`-s 1`, `-s 2`, etc.) Can you tell by looking at the thread interleaving what the final value of `value` will be? Does the timing of the interrupt matter? Where can it safely occur? Where not? In other words, where is the critical section exactly?
 
 **Answer:**
-TODO: where is the critical section?
-`./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0 -s 1 -R ax -c` -> value will be 1
+Bcz `ax` is a private register, thus the mov 2000, %ax, add and move back are indeed the critical section. And we need that critical section to be atomic to make the program deterministic.
+`./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 1 -R ax -c` -> value will be 1
 ```
- 2000          Thread 0                Thread 1         
-    0   
-    0   1000 mov 2000, %ax
-    0   ------ Interrupt ------  ------ Interrupt ------  
-    0                            1000 mov 2000, %ax
-    0                            1001 add $1, %ax
-    1                            1002 mov %ax, 2000
-    1                            1003 sub  $1, %bx
-    1   ------ Interrupt ------  ------ Interrupt ------  
-    1   1001 add $1, %ax
-    1   1002 mov %ax, 2000
-    1   1003 sub  $1, %bx
-    1   1004 test $0, %bx
-    1   ------ Interrupt ------  ------ Interrupt ------  
-    1                            1004 test $0, %bx
-    1                            1005 jgt .top
-    1   ------ Interrupt ------  ------ Interrupt ------  
-    1   1005 jgt .top
-    1   1006 halt
-    1   ----- Halt;Switch -----  ----- Halt;Switch -----  
-    1   ------ Interrupt ------  ------ Interrupt ------  
-    1                            1006 halt
+ 2000      ax          Thread 0                Thread 1         
+    0       0   
+    0       0   1000 mov 2000, %ax
+    0       0   ------ Interrupt ------  ------ Interrupt ------  
+    0       0                            1000 mov 2000, %ax
+    0       1                            1001 add $1, %ax
+    1       1                            1002 mov %ax, 2000
+    1       1                            1003 sub  $1, %bx
+    1       0   ------ Interrupt ------  ------ Interrupt ------  
+    1       1   1001 add $1, %ax
+    1       1   1002 mov %ax, 2000
+    1       1   1003 sub  $1, %bx
+    1       1   1004 test $0, %bx
+    1       1   ------ Interrupt ------  ------ Interrupt ------  
+    1       1                            1004 test $0, %bx
+    1       1                            1005 jgt .top
+    1       1   ------ Interrupt ------  ------ Interrupt ------  
+    1       1   1005 jgt .top
+    1       1   1006 halt
+    1       1   ----- Halt;Switch -----  ----- Halt;Switch -----  
+    1       1   ------ Interrupt ------  ------ Interrupt ------  
+    1       1                            1006 halt
 ```
-`./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0 -s 2 -R ax -c` -> value will be 2
+`./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 2 -R ax -c` -> value will be 2
 ```
 2000      ax          Thread 0                Thread 1         
     0       0   
@@ -233,26 +233,57 @@ TODO: where is the critical section?
     2       2                            1005 jgt .top
     2       2                            1006 halt
 ```
-## Question 
+## Question 7
 
->
-
-**Answer:**
-
-## Question 
-
->
+> Now examine fixed interrupt intervals: `./x86.py -p looping-race-nolock.s -a bx=1 -t 2 -M 2000 -i 1` What will the final value of the shared variable `value` be? What about when you change `-i 2`, `-i 3`, etc.? For
+which interrupt intervals does the program give the “correct” answer?
 
 **Answer:**
 
-## Question 
+`./x86.py -p looping-race-nolock.s -a bx=1 -t 2 -M 2000 -i 1 -R ax -c`
 
->
+`-i 1` -> value = 1
+`-i 2` -> value = 1
+`-i 3` -> value =2 (correctly). Because `-i 3` happen to keep the critical section atomic in this specific case.
+
+## Question 8
+
+> Run the same for more loops (e.g., set` -a bx=100`). What interrupt intervals (`-i`) lead to a correct outcome? Which intervals are surprising?
 
 **Answer:**
 
-## Question 
+`./x86.py -p looping-race-nolock.s -a bx=100 -t 2 -M 2000 -i 1 -R ax -c`
 
->
+Any `-i` that is a multiply of 3 will lead to a correct outcome. (or interval so large that it happens after the program finishes. e.g. for -i larger than 600.)
+
+## Question 9
+
+> One last program: `wait-for-me.s`. Run: `./x86.py -p wait-for-me.s -a ax=1,ax=0 -R ax -M 2000` This sets the `%ax` register to 1 for thread 0, and 0 for thread 1, and watches `%ax` and memory location 2000. How should the code behave? How is the value at location 2000 being used by the threads? What will its final value be?
+
 
 **Answer:**
+
+`./x86.py -p wait-for-me.s -a ax=1,ax=0 -R ax -M 2000 -c`
+
+```
+ 2000      ax          Thread 0                Thread 1         
+    0       1   
+    0       1   1000 test $1, %ax
+    0       1   1001 je .signaller
+    1       1   1006 mov  $1, 2000
+    1       1   1007 halt
+    1       0   ----- Halt;Switch -----  ----- Halt;Switch -----  
+    1       0                            1000 test $1, %ax
+    1       0                            1001 je .signaller
+    1       0                            1002 mov  2000, %cx ->> here cx will be 1
+    1       0                            1003 test $1, %cx ->> thus end the .waiter
+    1       0                            1004 jne .waiter
+    1       0                            1005 halt
+```
+## Question 10
+
+> Now switch the inputs: `./x86.py -p wait-for-me.s -a ax=0,ax=1 -R ax -M 2000` How do the threads behave? What is thread 0 doing? How would changing the interrupt interval (e.g., `-i 1000`, or perhaps to use random intervals) change the trace outcome? Is the program efficiently using the CPU?
+
+**Answer:**
+
+The thread 0 will keep looping until the it gets interrupted and thread 1 updates the value at address 2000 to 1. As a result, the sooner we interrupt, the more efficient the program will be.
