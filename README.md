@@ -422,4 +422,17 @@ Compiling and running: interestingly, in C, if you want to compile and run with 
 
 ![thread-guideline](./thread-api-guidelines.png)
 
-### Chapter 28 -
+### Chapter 28 - Locks
+
+Coarse-grained vs. fine-grained:
+
+- coarse-grained lock = one big lock that is used any time any critical section is accessed.
+- fine-grained lock = protect different data and data structures with different locks, allowing more threads to be in locked code at once.
+
+> Crux: How can we build an efficient lock? Efficient locks provide mutual exclusion at low cost, and also might attain a few other properties we discuss below (). What hardware support is needed? What OS support?
+
+Lock evaluation criteria:
+
+1. does it work? i.e. provides mutual exclusion
+2. fairness - does each thread contending for the lock get a fair shot at acquiring it once it is free.
+3. performance, specifically the time overheads added by using the lock.
