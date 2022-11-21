@@ -3,6 +3,9 @@
 Class repo for cs5600, where we dig deep into computer systems.
 
 ## Reading Notes
+Textbook link: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
+
+Homework git resource: [github link](https://github.com/remzi-arpacidusseau/ostep-homework/)
 
 ### Chapter 2 intro
 
