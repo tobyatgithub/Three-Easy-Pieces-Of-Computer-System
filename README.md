@@ -392,19 +392,34 @@ Reflecting on the applications, page fault will result a slow run or low respond
 
 - multi-level page table
 
-
 ### Chapter 26 Concurrency: intro to thread
 
 multi-thread vs. multi-process: Each thread is very much like a separate process, except for one difference: thread share the same address space and thus can access the same data. (Thus no need to switch which page table we are using when switching between threads.) Another difference is stack, where in multi-threads you will have multiple stacks in the code-heap-stack structure.
 
 Why multi-threads?
-1. parallelism: potential of speeding up the process considerably. 
+
+1. parallelism: potential of speeding up the process considerably.
 2. avoid blocking program due to slow I/O: help the scheduler to optimize the process by switching between threads (within one single program/process).
 
 Race condition (Data race) - costed by shared data and uncontrolled scheduling
 
--> solution: 
+-> solution:
 critical section - a piece of code that access a shared variable and must not be concurrently executed by more than one thread.
 
 mutual exclusion: guarantees that if one thread is executing within the critical section, the others will be prevented from doing so (lock?)
 
+### Chapter 27 - Interlude: Thread API
+
+Crux: how to create and control threads (such that it enables ease of use and utility.)
+
+Thread creation: in C, you can call `int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*strat_routine)(void*), void *arg)` to create a new thread. Once you create a thread, you really have another live executing entity, complete with its own call stack, running within the same address space as all the currently existing threads in the program. The fun thus begins!
+
+Thread completion: naturally, if you have creation, you have completion. Here: `int pthread_join(pthread_t thread, void **value_ptr);` will wait for the thread specified as `thread`, and assign the return value to the `**value_ptr`.
+
+Locks: provide mutual exclusion to a critical section. Syntax in `int pthread_mutex_lock(pthread_mutex_t *mutex);` and `int pthread_mutex_unlock(pthread_mutex_t *mutex);`.
+
+Compiling and running: interestingly, in C, if you want to compile and run with pthread, there are a bit more things to do, for example, to compile, you will need to `prompt> gcc -o main main.c -Wall -pthread` add this `-pthread` to the `gcc` (to link code) and also include the `pthread.h` header in the code.
+
+![thread-guideline](./thread-api-guidelines.png)
+
+### Chapter 28 -
