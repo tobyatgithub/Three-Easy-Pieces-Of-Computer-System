@@ -3,6 +3,7 @@
 Class repo for cs5600, where we dig deep into computer systems.
 
 ## Reading Notes
+
 Textbook link: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 
 Homework git resource: [github link](https://github.com/remzi-arpacidusseau/ostep-homework/)
@@ -439,3 +440,59 @@ Lock evaluation criteria:
 1. does it work? i.e. provides mutual exclusion
 2. fairness - does each thread contending for the lock get a fair shot at acquiring it once it is free.
 3. performance, specifically the time overheads added by using the lock.
+
+Attempts:
+
+- Turn off controlling interrupters: (trusting issue and potential harmful.)
+  Idea: do the system call and turn on and off hardware interrupter directly.
+
+- Using a single flag variable: (not correct and bad performance (spin-waiting).)
+  Idea: `var flag = True; ... while (flag==True) ;`
+
+- Spin Locks with Test-And-Set: correct, no fairness guarantees, and is pretty efficient (if the number of threads roughly equals the number of CPUs).
+  Idea: (??? seems similar to last idea but use object instead.)
+
+  ```c
+  typedef struct __lock_t {
+    int flag;
+  } lock_t;
+
+  void init(lock_t *lock) {
+    lock->flag = 0;
+  }
+
+  void lock(lock_t *lock) {
+    while (TestAndSet(&lock->flag, 1) == 1)
+      ;
+  }
+
+  void unlock(lock_t *lock) {
+    lock->flag = 0;
+  }
+  ```
+
+- Compare-and-swap: similar to test-and-set but more powerful.
+  Idea: test whether the value at the address specified is expected; if so, go ahead and update, and if not , do nothing.
+
+  ```c
+  int CompareAndSwap(int *ptr, int expected, int new) {
+    int original = *ptr;
+    if (original == expected)
+      *ptr = new;
+    return original;
+  }
+  ```
+
+- Load-Linked and Store-Conditional: similar (correct, no guarantee for fairness, and efficient.)
+  Idea: load-linked operation simply fetch the data from memory to a register, and store-conditional does things in an atomic way.
+
+- Fetch-And-Add: (correct, guarantee for eventual fairness, and efficient.)
+  Idea: atomically increments a value while returning the old value at a particular address. uses a ticket and turn variable in combination to build a lock. when a thread wishes to acquire a lock, it first does an atomic fetch-and-add on the ticket value; that value is now considered this thread’s “turn” (myturn). The globally shared lock->turn is then used to determine which thread’s turn it is; when (myturn == turn) for a given thread, it is that thread’s turn to enter the critical section. Unlock is accomplished simply by incrementing the turn such that the next waiting thread (if there is one) can now enter the critical section.
+
+- Yield: to better improve the efficiency problem introduced by the while spinning. `yield()` method simply turn the caller from the running state to the ready state, and thus promotes another thread to running.
+
+- Priority inversion: other than the performance issue of a spinning lock, priority inversion is another interesting reason for not using spinning lock. The idea is simple: with lock, tasks with different priority might get their running priority messed up. For example, a high priority T3 is waiting for I/O, and thus low priority T1 gets run and hold the lock. Now the T3 finishes I/O and the scheduler will immediately suspend T1 and run T3. But if T3 requires the lock held by T1, the system will be locked indefinitely. Three solutions: avoid using spin locks; or temporarily boost the lower thread's priority; or make all threads have the same priority.
+
+- Using Queues (sleeping instead of spinning): yield has two problems, 1. the cost of a context switch (due to thread change by `yield()`) could be substantial and wasteful; and 2. the starvation problem, where a thread may get caught in an endless yield loop while other threads repeatedly enter and exit the critical section.
+
+- Linux's two-phase locks: it realizes spinning can be useful, particularly if the lock is about to be released. Thus it spin once (or a fixed amount of time first) in the first-phase, hoping to acquire the lock. However, if the lock is not acquired during the first spin phase, a second phase enters, and the caller is put to sleep and only woken up when the lock becomes free later.
