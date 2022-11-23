@@ -5,10 +5,10 @@
 .top	
 
 .acquire
-mov  mutex, %ax
-test $0, %ax
-jne .acquire
-mov  $1, %ax        
+mov  mutex, %ax     # ax = mutex
+test $0, %ax        # if ax == 0:
+jne .acquire        #   back
+mov  $1, %ax        # else: ax = 1
 xchg %ax, mutex     # atomic swap of 1 and mutex
 test $0, %ax        # if we get 0 back: lock is free!
 jne .acquire        # if not, try again

@@ -22,11 +22,11 @@ neg %cx        # cx: - self
 add $1, %cx    # cx: 1 - self
 
 .acquire
-mov $1, 0(%fx,%bx,4)    # flag[self] = 1
+mov $1, 0(%fx,%bx,4)    # flag[self] = 1, index = bx
 mov %cx, turn           # turn       = 1 - self
 
 .spin1
-mov 0(%fx,%cx,4), %ax   # flag[1-self]
+mov 0(%fx,%cx,4), %ax   # ax = flag[1-self]
 test $1, %ax            
 jne .fini               # if flag[1-self] != 1, skip past loop to .fini
 
