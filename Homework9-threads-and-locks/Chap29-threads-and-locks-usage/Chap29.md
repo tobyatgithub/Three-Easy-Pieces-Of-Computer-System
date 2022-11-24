@@ -71,7 +71,7 @@ Time (seconds): 0.056620
 
 **Answer**
 
-Humm... based on the textbook, the hand-over-hand locking seems barely overperform a standard list with a lock?
+See `concurrentLinkedList.cpp` and Humm... based on the textbook, the hand-over-hand locking seems barely overperform a standard list with a lock?
 
 
 ## Question 5
