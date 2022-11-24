@@ -496,3 +496,14 @@ Attempts:
 - Using Queues (sleeping instead of spinning): yield has two problems, 1. the cost of a context switch (due to thread change by `yield()`) could be substantial and wasteful; and 2. the starvation problem, where a thread may get caught in an endless yield loop while other threads repeatedly enter and exit the critical section.
 
 - Linux's two-phase locks: it realizes spinning can be useful, particularly if the lock is about to be released. Thus it spin once (or a fixed amount of time first) in the first-phase, hoping to acquire the lock. However, if the lock is not acquired during the first spin phase, a second phase enters, and the caller is put to sleep and only woken up when the lock becomes free later.
+
+### Chap 29 - Lock-based Concurrent Data Structures
+
+Main goal: Adding locks to a data structure to make it us- able by threads makes the structure thread safe.
+
+Approximate Counter - a scalable counter:
+The idea is to use a couple of local counters (one per cpu) to avoid costly locking, and only update the global counter periodically.
+![Approximate Counter](./ApproximateCounter.png)
+
+Hand-over-hand locking - a scalable linked list (or maybe):
+Idea: instead of lock the whole linked list whenever trying to `insert`, we can only lock the node. However, in practice, it is hard to make such a structure faster than the simple single lock approach, as the overheads of acquiring and releasing locks for each node of a list traversal is prohibitive.
