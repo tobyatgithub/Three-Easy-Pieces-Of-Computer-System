@@ -49,8 +49,8 @@ cmake_ninja_workdir = C$:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/H
 
 build cmake_object_order_depends_target_Chap29_threads_and_locks_usage: phony || CMakeFiles/Chap29_threads_and_locks_usage.dir
 
-build CMakeFiles/Chap29_threads_and_locks_usage.dir/simpleQueue.cpp.obj: CXX_COMPILER__Chap29_threads_and_locks_usage_Debug C$:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/simpleQueue.cpp || cmake_object_order_depends_target_Chap29_threads_and_locks_usage
-  DEP_FILE = CMakeFiles\Chap29_threads_and_locks_usage.dir\simpleQueue.cpp.obj.d
+build CMakeFiles/Chap29_threads_and_locks_usage.dir/concurrentQueue.cpp.obj: CXX_COMPILER__Chap29_threads_and_locks_usage_Debug C$:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/concurrentQueue.cpp || cmake_object_order_depends_target_Chap29_threads_and_locks_usage
+  DEP_FILE = CMakeFiles\Chap29_threads_and_locks_usage.dir\concurrentQueue.cpp.obj.d
   FLAGS = -g
   OBJECT_DIR = CMakeFiles\Chap29_threads_and_locks_usage.dir
   OBJECT_FILE_DIR = CMakeFiles\Chap29_threads_and_locks_usage.dir
@@ -63,7 +63,7 @@ build CMakeFiles/Chap29_threads_and_locks_usage.dir/simpleQueue.cpp.obj: CXX_COM
 #############################################
 # Link the executable Chap29_threads_and_locks_usage.exe
 
-build Chap29_threads_and_locks_usage.exe: CXX_EXECUTABLE_LINKER__Chap29_threads_and_locks_usage_Debug CMakeFiles/Chap29_threads_and_locks_usage.dir/simpleQueue.cpp.obj
+build Chap29_threads_and_locks_usage.exe: CXX_EXECUTABLE_LINKER__Chap29_threads_and_locks_usage_Debug CMakeFiles/Chap29_threads_and_locks_usage.dir/concurrentQueue.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Chap29_threads_and_locks_usage.dir

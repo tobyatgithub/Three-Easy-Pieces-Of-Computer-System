@@ -21,12 +21,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e6f19b0f-cf33-45a9-b341-428a4b2bbf96" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/simpleQueue.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/concurrentQueue.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-9df3b63ee209b0de787c.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2022-11-24T09-53-10-0421.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/target-Chap29_threads_and_locks_usage-Debug-c194267c88ab260ef90a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-1dcec3b5a17d9357c6be.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2022-11-24T10-27-04-0867.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/target-Chap29_threads_and_locks_usage-Debug-2634ef5ce22d2a5f6f90.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Chap29_threads_and_locks_usage.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Chap29_threads_and_locks_usage.exe" afterDir="false" />
@@ -96,7 +96,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669280292782</updated>
-      <workItem from="1669280295954" duration="5344000" />
+      <workItem from="1669280295954" duration="5547000" />
     </task>
     <servers />
   </component>
