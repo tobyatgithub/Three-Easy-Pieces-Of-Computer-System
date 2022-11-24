@@ -1,0 +1,3 @@
+C:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/cmake-build-debug/CMakeFiles/Chap29_threads_and_locks_usage.dir
+C:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/cmake-build-debug/CMakeFiles/rebuild_cache.dir

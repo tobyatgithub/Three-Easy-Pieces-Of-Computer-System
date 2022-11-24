@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Chap29_threads_and_locks_usage",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Chap29_threads_and_locks_usage::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Chap29_threads_and_locks_usage-Debug-c194267c88ab260ef90a.json",
+					"name" : "Chap29_threads_and_locks_usage",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage/cmake-build-debug",
+		"source" : "C:/Users/tobyf/Documents/cs5600_computerSystem_fall2022/Homework9-threads-and-locks/Chap29-threads-and-locks-usage"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
