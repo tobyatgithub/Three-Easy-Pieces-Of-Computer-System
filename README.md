@@ -507,3 +507,7 @@ The idea is to use a couple of local counters (one per cpu) to avoid costly lock
 
 Hand-over-hand locking - a scalable linked list (or maybe):
 Idea: instead of lock the whole linked list whenever trying to `insert`, we can only lock the node. However, in practice, it is hard to make such a structure faster than the simple single lock approach, as the overheads of acquiring and releasing locks for each node of a list traversal is prohibitive.
+
+### Chapter 35 - Intro to Persistence
+
+Crux: How should I/O be integrated into systems? What are the general mechanisms? How can we make them efficient?
