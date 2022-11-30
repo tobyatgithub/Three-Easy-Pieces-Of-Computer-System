@@ -511,3 +511,21 @@ Idea: instead of lock the whole linked list whenever trying to `insert`, we can 
 ### Chapter 35 - Intro to Persistence
 
 Crux: How should I/O be integrated into systems? What are the general mechanisms? How can we make them efficient?
+
+Reason for Persistence: we would love to preserve some data for future use.
+
+DMA (direct memory access): a DMA engine is essentially a very specific device within a system that can orchestrate transfers between devices and main memory without much CPU intervention.
+
+Interrupt and switch: similar to previously, one solution to improve I/O is using interrupt and switch (and thus avoiding while spin polling). However, it only makes sense to slow devices (where you might spin for a while until the I/O is done); and for faster devices, the cost of switching may very quickly overweight the benefits. And for devices that sometimes fast and sometimes slow, we could use hybrid approach (two-phased) to achieve the best of both worlds.
+
+Livelock: when a huge stream of incoming packets each generate an interrupt, and it find itself only processing interrupts and never allowing a user-level process to run and actually service the requests.
+
+(Buffered) coalescing: a device which needs to raise an interrupt first waits for a bit before delivering the interrupt to the CPU. While waiting, other requests may soon complete, and thus multiple interrupts can be coalesced into a single interrupt delivery, thus lowering the overhead of interrupt processing.
+
+### Chapter 36 - RAID
+
+striping: the basic idea is that to spread the blocks of the array across the disks in a round-robin fashion.
+
+RAID mapping problem: given a logical block to read or write, how does the RAID know exactly which physical disk and offset to access?
+
+RAID consistent-update problem: The problem occurs on a write to any RAID that has to update multiple disks during a single logical operation. (for example, a power lost during update and result in one disk updated and another one not.) The general way to solve this problem is to use a write-ahead log of some kind to first record what the RAID is about to do and call a recovery procedure to sync.
