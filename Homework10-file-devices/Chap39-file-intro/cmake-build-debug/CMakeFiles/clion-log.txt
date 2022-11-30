@@ -1,0 +1,4 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/toby/Documents/ACADEMIC_Northeastern/2022_fall_now/cs5600_computerSystem_fall2022.nosync/Homework10-file-devices/Chap39-file-intro -B /Users/toby/Documents/ACADEMIC_Northeastern/2022_fall_now/cs5600_computerSystem_fall2022.nosync/Homework10-file-devices/Chap39-file-intro/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/toby/Documents/ACADEMIC_Northeastern/2022_fall_now/cs5600_computerSystem_fall2022.nosync/Homework10-file-devices/Chap39-file-intro/cmake-build-debug
