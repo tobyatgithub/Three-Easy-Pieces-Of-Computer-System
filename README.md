@@ -1,40 +1,38 @@
-# cs5600_computerSystem_fall2022
+# Operating Systems: Three Easy Pieces
 
-Class repo for cs5600, where we dig deep into computer systems.
+This repo is my learning notes of "Operating Systems: Three Easy Pieces". A fascinating book where we dig deep into computer systems.
 
-## Reading Notes
+## Supporting Materials
 
 Textbook link: [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 
 Homework git resource: [github link](https://github.com/remzi-arpacidusseau/ostep-homework/)
 
-### Chapter 2 intro
 
-Key/Crux of this chapter:
 
-Crux of Virtualization:
+## Chapter 2 intro
+---
 
-> How does the operating system virtualize resources? where **virtualization** == the OS takes a physical resource (processor, memory, or a disk) and transforms it into a more general, powerful, and easy-to-use virtual form of itself.
+> This chapter mainly talks about the cruxes we face when designing an operating system. Namely, "virtualization", "concurrency", and "data persistency".
+
+Crux of Virtualization: How does the operating system virtualize resources? where **virtualization** == the OS takes a physical resource (processor, memory, or a disk) and transforms it into a more general, powerful, and easy-to-use virtual form of itself.
 
 - provides some interfaces/APIs/system calls that are available to applications (standard library).
 - thus OS is known as a resource manager.
 - Memory virtualization: each process accesses its own private virtual address space (sometimes just called its address space), which the OS somehow maps onto the physical memory of the machine.
 
-Crux of "How to build correct concurrent programs":
+Crux of "How to build correct **concurrent** programs": When there are many concurrently executing threads within the same memory space, how can we build a correctly working program? What primitives are needed from the OS? What mechanisms should be provided by the hardware? How can we use them to solve the problems of concurrency?
 
-> When there are many concurrently executing threads within the same memory space, how can we build a correctly working program? What primitives are needed from the OS? What mechanisms should be provided by the hardware? How can we use them to solve the problems of concurrency?
+Crux of the "how to store **data persistently**": The file system is the part of the OS in charge of managing persistent data. What techniques are needed to do so correctly? What mechanisms and policies are required to do so with high performance? How is reliability achieved, in the face of failures in hardware and software?
 
-Crux of the "how to store data persistently":
+## Chapter 4 CPU-Intro, The Abstraction: The Process
+---
+> Here we lay the ground work for the following CPU study. We identify the main function, duty and goal of a CPU (run program, execution, and illusion of a nearly-endless supply.)
 
-> The file system is the part of the OS in charge of managing persistent data. What techniques are needed to do so correctly? What mechanisms and policies are required to do so with high performance? How is reliability achieved, in the face of failures in hardware and software?
+**Crux** of "How to provide the illusion of many CPUs": Although there are only a few physical CPUs available, how can the OS provide the illusion of a nearly-endless supply of said CPUs?
 
-### Chapter 4 CPU-Intro, The Abstraction: The Process
+- The process == a running program. (where a program is a lifeless bunch of instructions and maybe some static data on the disk, waiting to spring into action.)
 
-The process == a running program. (where a program is a lifeless bunch of instructions and maybe some static data on the disk, waiting to spring into action.)
-
-The Crux of "How to provide the illusion of many CPUs"?
-
-> Although there are only a few physical CPUs available, how can the OS provide the illusion of a nearly-endless supply of said CPUs?
 
 - The OS creates this illusion by virtualizing the CPU. By running one process, then stopping it and running another, and so forth, the OS can promote the illusion that many virtual CPUs exist when in fact there is only one physical CPU (or a few)
 
@@ -48,7 +46,9 @@ The Crux of "How to provide the illusion of many CPUs"?
 
 - 3 process states: running, ready, and blocked
 
-### Chapter 5 Interlude: Process API
+## Chapter 5 Interlude: Process API
+---
+> Here we look deeper into the CPU mechanisms, and investigate several built in tools provided by the linux system (fork(), wait(), exec()...). Via them we get to understand how process control is currently designed.
 
 - The CPU scheduler (via calling fork()), we can see, is not deterministic. (i.e. the parent process and child process from fork() might get called and executed in any order.)
 
@@ -64,11 +64,11 @@ The Crux of "How to provide the illusion of many CPUs"?
 
 - Process control other than fork and exec (e.g. kill) can be used to send signals to a process. However, not everyone/application is allowed to do this. Otherwise the usability and security of the system will be compromised. Thus only a validated **user** is allowed to control their own processes.
 
-### Chapter 7 Scheduling
+## Chapter 7 CPU Scheduling
+---
+> This chapter is the major meat of the CPU part. It discusses the core problem of CPU: given the limited amount of resource, how shall I schedule the work for my CPUs. What are the metrics? (turnaround time, response time, fairness.) How shall I prioritize? (depending on scenarios and thus metrics.) And we look into several famous policies as examples. (shortest-first, round-robin...)
 
-Crux of "How to develope scheduling policy":
-
-> How should we develop a basic framework for thinking about scheduling policies? What are the key assumptions? What metrics are important? What basic approaches have been used in the earliest of computer systems?
+Crux of "How to develope scheduling policy": How should we develop a basic framework for thinking about scheduling policies? What are the key assumptions? What metrics are important? What basic approaches have been used in the earliest of computer systems?
 
 - workload: Determining the workload is a critical part of building policies, and the more you know about workload, the more fine-tuned your policy can be.
 
@@ -82,11 +82,11 @@ Crux of "How to develope scheduling policy":
 
 - (policy) round robin /time-slicing: instead of running jobs to completion, RR runs a job for a time slice (sometimes called a scheduling quantum) and then switches to the next job in the run queue. (make scheduling quantum big to reduce the context-switching cost.)
 
-### Chapter 8 The Multi-level feedback queue
+## Chapter 8 The Multi-level feedback queue
+---
+> Here we extend the content from last chapter... after seeing the crux and some basic strategies of CPU scheduling, now we look into multi-level feedback queue (MLFQ), which essentially is a hyber strategy, and investigate how MLFQ can help us do better.
 
-Crux of "How to schedule without perfect knowledge?"
-
-> Given that we in general do not know anything about a process, how can we build a scheduler to achivev these goals? How can the scheduler learn, as the system runs, the characteristics of the jobs it is running, and thus make better scheduling decisions? (\*esp. without a priori knowledge of job length?)
+Crux of "How to schedule without perfect knowledge?": Given that we in general do not know anything about a process, how can we build a scheduler to achivev these goals? How can the scheduler learn, as the system runs, the characteristics of the jobs it is running, and thus make better scheduling decisions? (\*esp. without a priori knowledge of job length?)
 
 - There are two overall goals for MLFQ: 1. optimize turnaround time (~shorter jobs first); 2. minimize response time (~ Round Robin).
 
@@ -104,6 +104,7 @@ Crux of "How to schedule without perfect knowledge?"
     1. First, there is the problem of starvation: if there are “too many” interactive jobs in the system, they will combine to consume all CPU time, and thus long-running jobs will never receive any CPU time (they starve).
     2. Second, a smart user could rewrite their program to game the scheduler (e.g. before the time slice is over, issue an I/O operation (to some file you don’t care about) and thus relinquish the CPU)
     3. a program may change its behavior over time; what was CPU- bound may transition to a phase of interactivity (but will remain in lowest priority in our current design.)
+
 - MLFQ2 improve: The Priority Boost
 
   - "Reshuffle"Rule 5: After some time period S, move all the jobs in the system to the topmost queue.
@@ -119,7 +120,9 @@ Crux of "How to schedule without perfect knowledge?"
 - Advice:
   As the operating system rarely knows what is best for each and every process of the system, it is often useful to provide interfaces to allow users or administrators to provide some hints to the OS. We often call such hints advice, as the OS need not necessarily pay attention to it, but rather might take the advice into account in order to make a better decision.
 
-### Chapter 9 Scheduling: Proportional Share
+## Chapter 9 Scheduling: Proportional Share
+---
+> Now we look into the other side of CPU scheduling - i.e. we not only want to reduce turnaround time and responding time, we also care about fairness. We don't want some program to "game the system" and gain unnecessary advantage. How to solve it? Maintain a proportion. In this chapter we see 3 different proportion based scheduling strategies: lottery, stride, and linux completely fair scheduler (CFS).
 
 Crux: How to share the CPU proportionally.
 
@@ -149,13 +152,16 @@ Crux: How to share the CPU proportionally.
 
 - Lottery uses randomness in a clever way to achieve proportional share; stride does so deterministically. CFS, the only “real” scheduler discussed in this chapter, is a bit like weighted round-robin with dynamic time slices, but built to scale and perform well under load; to our knowledge, it is the most widely used fair-share scheduler in existence today.
 
-Lottery ~ randomness to achieve proportional share
+Comment:
+> Lottery ~ randomness to achieve proportional share
 -> problem with not deliver the exact right proportions over short time scales
 Stride scheduling ~ a deterministic fair-share scheduler (where stride = inverse of the tickets, i.e. pre-calculate to ensure the exact proportion)
 -> problem with a global state (thus making inserting new jobs very difficult)
 Completely Fair Scheduler ~ use vruntime, sched_latency, min_granularity, and niceness + red-black tree to achieve a weighted round-robin with dynamic time slices that build to perform well under load.
 
-### Chapter 10, Multiprocessor Scheduling
+## Chapter 10, Multiprocessor Scheduling
+---
+> What about we have more than 1 CPU? This scaling up is harder than it sounds like. Because we introduce the complexity of concurrency whenever we introduce more than one entity (cache, memory, file system.) Huge benefit with big complexity. Given the benefit is so huge that it is necessary to move forward, we thus look into strategies on how to ensure the concurrency. There are eseentially two types: single-queue multiprocessor scheduling, and multi-queue scheduling. Each have pros and cons and working examples: the O(1) scheduler, the Completely Fair Scheduler (CFS), and the BF Scheduler (BFS).
 
 Crux: How should the OS schedule jobs on multiple CPUs? What new problems arise? Do the same old techniques work, or are new ideas required?
 
@@ -217,11 +223,14 @@ Interestingly, in the Linux community, no common solution has approached to buil
 
 Both O(1) and CFS use multiple queues, whereas BFS uses a single queue, showing that both approaches can be successful. O(1) ~ based on priority; CFS more like stride scheduling, do a deterministic proportional-share. BFS is based on Earliest Eligible Virtual Deadline First.
 
-### Chapter 13, The Abstraction: Address Spaces
+## Chapter 13, The Abstraction: Address Spaces
+---
+> Now we start to really explore concurrency topic, where we want to allow multiple programming running on one machine at the same time, and we want to allow multiple users to use a machine at the same time. What are some concepts we must think about? (protection, and address space management.)
+
 
 - Multiprogramming and time sharing: The notion of interactivity became important, as many users might be concurrently using a machine, each waiting for (or hoping for) a timely response from their currently-executing tasks.
 
-- Protection: In particular, allow- ing multiple programs to reside concurrently in memory makes **protection** an important issue; you don’t want a process to be able to read, or worse, write some other process’s memory.
+- Protection: In particular, allowing multiple programs to reside concurrently in memory makes **protection** an important issue; you don’t want a process to be able to read, or worse, write some other process’s memory.
 
 - Address space (code, stack, heap): However, we have to keep those pesky users in mind, and doing so requires the OS to create an easy to use abstraction of physical memory. We call this abstraction the address space, and it is the running program’s view of memory in the system. The address space of a process contains all of the memory state of the running program.
 
@@ -230,28 +239,28 @@ Both O(1) and CFS use multiple queues, whereas BFS uses a single queue, showing 
   - efficiency: The OS should strive to make the virtualization as efficient as possible, both in terms of time (i.e., not mak- ing programs run much more slowly) and space (i.e., not using too much memory for structures needed to support virtualization)
   - protection: The OS should make sure to protect processes from one another as well as the OS itself from process.
 
+
+## Chapter 14, Interlude: Memory API
 ---
 
-### Chapter 14, Interlude: Memory API
+> This chapter mainly talks about many practical potential errors and mistakes in c coding that is related to memory management (`malloc()`, `free()`, ...) We gonna see why it is so hard to manage memory correctly, from a low-level point of view! For example, **stack** is more dynamic and will store the data generated when programs are running, while **heap** is more static and will store pre-determined stuff (such as your code.) We also look into the notorious "memory leak" concept. What is memory leak?!
 
-Toby: this chapter mainly talks about many practical potential errors and mistakes in c coding that is related to memory management (`malloc(), free(), `)
-
-> Crux: In UNIX/C programs, understanding how to allocate and manage memory is critical in building robust and reliable software. What interfaces are commonly used? What mistakes should be avoided?
+Crux: In UNIX/C programs, understanding how to allocate and manage memory is critical in building robust and reliable software. What interfaces are commonly used? What mistakes should be avoided?
 
 - Two types of memory (stack and heap):
 
   - stack: allocations and deallocations of it are managed implicitly by the compiler for you, the programmer; for this reason it is sometimes called **automatic** memory. (e.g. `int x;` is a stack memory declaration.)
+
   - heap: all allocations and deallocations are **explicitly** handled by you, the programmer. (e.g. `int *x = (int *) malloc(sizeof(int))`)
 
 - memory leak: it occurs when you forget to free memory, thus in long-running apps or systems, this will eventually lead you to run out of memory, and then a restart is required.
 
+
+## Chapter 15, Address Translation Mechanism
 ---
+> To better understand the memory challenge of concurrency, we go one level deeper to understand how memory operates: via address translation. Kernels, privileged mode, and user mode.
 
-### Chapter 15, Address Translation Mechanism
-
-Crux: How to efficiently and flexibly virtualize memory?
-
-> recall the virtualization from Chapter 2: each process accesses its own private virtual address space (sometimes just called its address space), which the OS somehow maps onto the physical memory of the machine.
+Crux: How to efficiently and flexibly virtualize memory? Recall the virtualization from Chapter 2: each process accesses its own private virtual address space (sometimes just called its address space), which the OS somehow maps onto the physical memory of the machine.
 
 CPU Mechanism - **limited direct execution (LDE)**: for the most part, let the program run directly on the hardware; however, at certain key points in time (such as when a process issues a system call, or a timer interrupt occurs), arrange so that the OS gets involved and makes sure the “right” thing happens. Thus, the OS, with a little hardware support, tries its best to get out of the way of the running program, to deliver an efficient virtualization; however, by inter- posing at those critical points in time, the OS ensures that it maintains control over the hardware.
 
@@ -261,21 +270,27 @@ Memory mechanism - **hardware-based address translation**: With address translat
 
 Privileged mode vs. user mode: on CPU virtualization, we require two different CPU modes. The OS runs in privileged mode (or kernel mode), where it has access to the entire machine; applications run in user mode, where they are limited in what they can do.
 
-### Chapter 16, Segmentation
+## Chapter 16, Segmentation
+---
+> Now we look into a very practical problem: we only have limited size of hardwares, but we could have very very huge files. How shall we store huge files? What are some common challenges and best practices? (segmentation).
 
-> Crux: How to support a large address space?
+Crux: How to support a large address space?
 
 - Segmentation: instead of having just one base and bounds pair in our MMU, why not have a base and bounds pair per logical segment of the address space? A segment is just a contiguous portion of the address space of a particular length, and it allows the OS to place each (code, stack, heap) in different parts of the physical memory, and thus avoid filling physical memory with unused virtual address space.
 
-### Chapter 17, Free Space Management
+## Chapter 17, Free Space Management
+---
+> Segmentation, while allowing us to store large files, comes with its own challenges. (fragmentation.) How can we manage our free space and segmentation process effectively to reduce the amount of fragmentation? (paging, coalesce, and different management strategies.)
 
-> Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
+Crux: How should free space be managed, when satisfying variable-sized requests? What strategies can be used to minimize fragmentation? What are the time and space overheads of alternate approaches?
 
 - paging: divide space into fixed-sized units.
 
 - coalesce: important! as it greatly affect how effective our free space management will be. The basic idea is simple: if we have two free space next to each other, merge them into one. Keep doing this operation until there's no more free space that can be merged.
 
-### Chapter 18: Paging
+## Chapter 18: Paging
+---
+> To better handle the segmentation issues, one great practice is paging. Here we discuss its pros (flexibility, simple allocation) and cons (internal fragmentations).
 
 Usually there are two approaches when solving most space-management related problems:
 
@@ -291,7 +306,7 @@ Usually there are two approaches when solving most space-management related prob
 
 notice here, the page table is a per-process data structure. i.e. each process will have their own page table.
 
-> Crux: How can we virtualize memory with pages, so as to avoid the problem of segmentation? What are some basic techniques? How do we make those techniques work well, with minimal space and time overheads?
+Crux: How can we virtualize memory with pages, so as to avoid the problem of segmentation? What are some basic techniques? How do we make those techniques work well, with minimal space and time overheads?
 
 - Where are page tables stored?
   -> page tables can be stored in OS virtual memory and even swapped to disk given it can be very very huge in some cases (multiple MB)
@@ -300,7 +315,9 @@ notice here, the page table is a per-process data structure. i.e. each process w
   -> a virtual mapping from virtual page numbers to physical address. We can use array or hash map or many different data structures.
   -> valid bit, invalid bit, protection bit, present bit, dirty bit, reference/accessed bit.
 
-### Chapter 19: Faster Paging (TLBs, a translation-lookaside buffer)
+## Chapter 19: Faster Paging (TLBs, a translation-lookaside buffer)
+---
+> This chapter is pretty detail and much more low-level, where we walk through how computer will translate memory to actually physical address. However, we also need to think about performance here: one big aspect is the speed -> how to make this translation process faster? Several interesting ideas: cache, and localities.
 
 ??? the calculations of these two chapters bits, up to xxx MB or GB???
 
@@ -308,22 +325,23 @@ notice here, the page table is a per-process data structure. i.e. each process w
 
 Paging requires a large amount of mapping info. Going to memory for translation information before every instruction fetch or explicit load or store is prohibitively slow.
 
-> Crux: How to speed up address translation?
+- Crux: How to speed up address translation?
 
--> Cache it: a translation-lookaside buffer, or TLB [CG68, C95]. A TLB is part of the chip’s memory-management unit (MMU), and is simply a hardware cache of popular virtual-to-physical address translations
+- Cache it: a translation-lookaside buffer, or TLB [CG68, C95]. A TLB is part of the chip’s memory-management unit (MMU), and is simply a hardware cache of popular virtual-to-physical address translations
 
-fully associative: a typical TLB might have 32, 64, or 128 entries and be fully associative, which means that any given translation can be anywhere in the TLB, and the hardware will search the entire TLB in parallel to find the desired translation.
+- fully associative: a typical TLB might have 32, 64, or 128 entries and be fully associative, which means that any given translation can be anywhere in the TLB, and the hardware will search the entire TLB in parallel to find the desired translation.
 
-cache replacement: LRU (least recently used) policy, random policy
+- cache replacement: LRU (least recently used) policy, random policy
 
-bottleneck: TLB access can easily become a bottleneck in the CPU pipeline
+- bottleneck: TLB access can easily become a bottleneck in the CPU pipeline
 
-Cache - spatial locality: the idea is that if a program accesses memory at address x, it will likely soon access memory near x.
-Even though this is the first time the program accesses the array, the TLB improves performance due to spatial locality. The elements of the array are packed tightly into pages (i.e., they are close to one another in space), and thus only the first access to an element on a page yields a TLB miss.
+- Cache's spatial locality: the idea is that if a program accesses memory at address x, it will likely soon access memory near x. Even though this is the first time the program accesses the array, the TLB improves performance due to spatial locality. The elements of the array are packed tightly into pages (i.e., they are close to one another in space), and thus only the first access to an element on a page yields a TLB miss.
 
-Cache - temporal locality: an instruction or data item that has been recently accessed will likely be re-accessed soon in the future
+- Cache - temporal locality: an instruction or data item that has been recently accessed will likely be re-accessed soon in the future
 
-### Chapter 20: Paging with smaller tables
+## Chapter 20: Paging with smaller tables
+---
+> This chapter talks about the cons of a page table and how to handle that (i.e. page table itself might taking too much space.) And thus we introduce multi-level page table.
 
 Crux: Simple array-based page tables (usually called linear page tables) are too big, taking up far too much memory on typical systems. How to make page tables smaller?
 
@@ -335,13 +353,11 @@ Problem - internal fragmentation (big pages lead to waste within each page.)
 
 Solution 2 - Hybrid Paging + Segmentation:
 
-we use the base not to point to the segment itself but rather to hold the physical address of the page table of that
-segment. The bounds register is used to indicate the end of the page table
+we use the base not to point to the segment itself but rather to hold the physical address of the page table of that segment. The bounds register is used to indicate the end of the page table
 
 Solution 3 - Multi level page tables:
 
-First, chop up the page table into page-sized units; then, if an entire page of page-table entries (PTEs) is invalid, don’t allocate that page of the page table at all. To track whether a page of the page table is valid (and if valid, where it
-is in memory), use a new structure, called the page directory.
+First, chop up the page table into page-sized units; then, if an entire page of page-table entries (PTEs) is invalid, don’t allocate that page of the page table at all. To track whether a page of the page table is valid (and if valid, where it is in memory), use a new structure, called the page directory.
 
 pro - 1. it only allocates page-table space in proportion to the amount of address space you are using. 2. very flexible in address allocating (compared to you will need a continuous physical space in a linear paging design,) we can allocate page-table pages wherever in the physical memory.
 
@@ -351,13 +367,16 @@ Solution 4 - Inverted Page Tables:
 
 Here, instead of having many page tables (one per process of the system), we keep a single page table that has an entry for each physical page of the system.
 
-### Chap 21: Beyond Physical Memory: Mechanisms
+## Chap 21: Beyond Physical Memory: Mechanisms
+---
 
 Motivate: We will now relax these big assumptions, and assume that we wish to support many concurrently-running large address spaces. To support large address spaces, the OS will need a place to stash away portions of address spaces that currently aren’t in great demand.
 
 Crux: How can the OS make use of a larger, slower device to transparently provide the illusion of a large virtual address space?
 
-### Chap 22: Beyond Physical Memory: Policies
+## Chap 22: Beyond Physical Memory: Policies
+---
+> More on free space management policies. How to improve by using locality. Some common memory policies. Problem of thrashing.
 
 Spatial locality: locality based on nearby location (i.e. nearby address is likely being called)
 Temporal locality: locality based on reuse (i.e. same address being called several timers)
@@ -376,13 +395,17 @@ Scan-resistance: Scan resistance is about keeping the cache “good” when face
 
 Thrashing: is when the system spends most of its time servicing page faults, little time doing useful work.
 
-### Chap 23: Complete VIrtual Memory Systems
+## Chap 23: Complete Virtual Memory Systems
+---
+
 
 - key elements: page-table designs, interactions with the TLB, abd eviction strategies.
 
 - The kernel is mapped into each address space: 1. make swap pages much easier (vs. locate kernel entirely in physical memory) 2. make it easy (vs. kernel have its own address space.) 3. now kernel appears almost like a library to applications (good).
 
-### Mid-check-mastery: page fault.
+## Mid-check-mastery: Page Fault.
+---
+> Page Fault is a great practice that touches on all the concepts above!
 
 Three levels' of effect:
 
@@ -390,114 +413,124 @@ Three levels' of effect:
 - os(swap policy)
 - application(thrashing)
 
-Page fault initialized from app where it starts and demands page -> then the os will move on to check the page table -> if exists, return. Another wise, os will move forward and try to get the demanded page (where hardware's tlb comes to assistance) -> after getting the demanded page, the page table will need to store it, and if there're no more free space in the page table, the os will need to decide which old page to evict (swap policy).
+Page fault initialized from app where it starts and demands page 
+
+-> then the os will move on to check the page table 
+
+-> if exists, return. Otherwise, the OS will move forward and try to get the demanded page (where hardware's tlb comes to assistance) 
+
+-> after getting the demanded page, the page table will need to store it, and if there're no more free space in the page table, the os will need to decide which old page to evict (swap policy).
 
 Reflecting on the applications, page fault will result a slow run or low responding. It might cause "thrashing" if it gets worse (due to limited resources available). And since the swapping involves I/O process, the CPU scheduler will also adjust accordingly, making page fault affect app on all three levels (demand paging, thrashing, and scheduling).
 
-- multi-level page table
+-> multi-level page table
 
-### Chapter 26 Concurrency: intro to thread
+## Chapter 26 Concurrency: intro to thread
+---
+> Naturally, we continue our concurrency topic into thread. Here we must notice the difference between a "thread" and a "process", the importance of "parallelism" to concurrency, and how to deal with race condition.
 
-multi-thread vs. multi-process: Each thread is very much like a separate process, except for one difference: thread share the same address space and thus can access the same data. (Thus no need to switch which page table we are using when switching between threads.) Another difference is stack, where in multi-threads you will have multiple stacks in the code-heap-stack structure.
+- multi-thread vs. multi-process: Each thread is very much like a separate process, except for one difference: thread share the same address space and thus can access the same data. (Thus no need to switch which page table we are using when switching between threads.) Another difference is stack, where in multi-threads you will have multiple stacks in the code-heap-stack structure.
 
-Why multi-threads?
+- Why multi-threads?
+  1. parallelism: potential of speeding up the process considerably.
+  2. avoid blocking program due to slow I/O: help the scheduler to optimize the process by switching between threads (within one single program/process).
 
-1. parallelism: potential of speeding up the process considerably.
-2. avoid blocking program due to slow I/O: help the scheduler to optimize the process by switching between threads (within one single program/process).
+- Race condition (Data race) - costed by shared data and uncontrolled scheduling
 
-Race condition (Data race) - costed by shared data and uncontrolled scheduling
+- critical section: a piece of code that access a shared variable and must not be concurrently executed by more than one thread.
 
--> solution:
-critical section - a piece of code that access a shared variable and must not be concurrently executed by more than one thread.
+- mutual exclusion: guarantees that if one thread is executing within the critical section, the others will be prevented from doing so (lock?)
 
-mutual exclusion: guarantees that if one thread is executing within the critical section, the others will be prevented from doing so (lock?)
-
-### Chapter 27 - Interlude: Thread API
+## Chapter 27 - Interlude: Thread API
+---
+> This chapter is more c++ coding oriented, where we walk through how threads are created and maintained in c language.
 
 Crux: how to create and control threads (such that it enables ease of use and utility.)
 
-Thread creation: in C, you can call `int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*strat_routine)(void*), void *arg)` to create a new thread. Once you create a thread, you really have another live executing entity, complete with its own call stack, running within the same address space as all the currently existing threads in the program. The fun thus begins!
+- Thread creation: in C, you can call `int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*strat_routine)(void*), void *arg)` to create a new thread. Once you create a thread, you really have another live executing entity, complete with its own call stack, running within the same address space as all the currently existing threads in the program. The fun thus begins!
 
-Thread completion: naturally, if you have creation, you have completion. Here: `int pthread_join(pthread_t thread, void **value_ptr);` will wait for the thread specified as `thread`, and assign the return value to the `**value_ptr`.
+- Thread completion: naturally, if you have creation, you have completion. Here: `int pthread_join(pthread_t thread, void **value_ptr);` will wait for the thread specified as `thread`, and assign the return value to the `**value_ptr`.
 
-Locks: provide mutual exclusion to a critical section. Syntax in `int pthread_mutex_lock(pthread_mutex_t *mutex);` and `int pthread_mutex_unlock(pthread_mutex_t *mutex);`.
+- Locks: provide mutual exclusion to a critical section. Syntax in `int pthread_mutex_lock(pthread_mutex_t *mutex);` and `int pthread_mutex_unlock(pthread_mutex_t *mutex);`.
 
-Compiling and running: interestingly, in C, if you want to compile and run with pthread, there are a bit more things to do, for example, to compile, you will need to `prompt> gcc -o main main.c -Wall -pthread` add this `-pthread` to the `gcc` (to link code) and also include the `pthread.h` header in the code.
+- Compiling and running: interestingly, in C, if you want to compile and run with pthread, there are a bit more things to do, for example, to compile, you will need to `prompt> gcc -o main main.c -Wall -pthread` add this `-pthread` to the `gcc` (to link code) and also include the `pthread.h` header in the code.
 
 ![thread-guideline](./thread-api-guidelines.png)
 
-### Chapter 28 - Locks
+## Chapter 28 - Locks
+---
+> An essential method to solve race condition is lock. i.e. at a given time, we only allow one user to modify the content. With locks, now comes the price: lock slow things down. So how can we use lock effectively such that it prevents race condition but also deliver performance? (single flag, test-and-set, compare-and-swap, etc.)
 
 Coarse-grained vs. fine-grained:
-
 - coarse-grained lock = one big lock that is used any time any critical section is accessed.
 - fine-grained lock = protect different data and data structures with different locks, allowing more threads to be in locked code at once.
 
-> Crux: How can we build an efficient lock? Efficient locks provide mutual exclusion at low cost, and also might attain a few other properties we discuss below (). What hardware support is needed? What OS support?
+Crux: How can we build an efficient lock? Efficient locks provide mutual exclusion at low cost, and also might attain a few other properties we discuss below (). What hardware support is needed? What OS support?
 
-Lock evaluation criteria:
+- Lock evaluation criteria:
+  1. does it work? i.e. provides mutual exclusion
+  2. fairness - does each thread contending for the lock get a fair shot at acquiring it once it is free.
+  3. performance, specifically the time overheads added by using the lock.
 
-1. does it work? i.e. provides mutual exclusion
-2. fairness - does each thread contending for the lock get a fair shot at acquiring it once it is free.
-3. performance, specifically the time overheads added by using the lock.
+- Attempts:
 
-Attempts:
+  - Turn off controlling interrupters: (trusting issue and potential harmful.)
+    Idea: do the system call and turn on and off hardware interrupter directly.
 
-- Turn off controlling interrupters: (trusting issue and potential harmful.)
-  Idea: do the system call and turn on and off hardware interrupter directly.
+  - Using a single flag variable: (not correct and bad performance (spin-waiting).)
+    Idea: `var flag = True; ... while (flag==True) ;`
 
-- Using a single flag variable: (not correct and bad performance (spin-waiting).)
-  Idea: `var flag = True; ... while (flag==True) ;`
+  - Spin Locks with Test-And-Set: correct, no fairness guarantees, and is pretty efficient (if the number of threads roughly equals the number of CPUs).
+    Idea: (??? seems similar to last idea but use object instead.)
 
-- Spin Locks with Test-And-Set: correct, no fairness guarantees, and is pretty efficient (if the number of threads roughly equals the number of CPUs).
-  Idea: (??? seems similar to last idea but use object instead.)
+    ```c
+    typedef struct __lock_t {
+      int flag;
+    } lock_t;
 
-  ```c
-  typedef struct __lock_t {
-    int flag;
-  } lock_t;
+    void init(lock_t *lock) {
+      lock->flag = 0;
+    }
 
-  void init(lock_t *lock) {
-    lock->flag = 0;
-  }
+    void lock(lock_t *lock) {
+      while (TestAndSet(&lock->flag, 1) == 1)
+        ;
+    }
 
-  void lock(lock_t *lock) {
-    while (TestAndSet(&lock->flag, 1) == 1)
-      ;
-  }
+    void unlock(lock_t *lock) {
+      lock->flag = 0;
+    }
+    ```
 
-  void unlock(lock_t *lock) {
-    lock->flag = 0;
-  }
+  - Compare-and-swap: similar to test-and-set but more powerful.
+    Idea: test whether the value at the address specified is expected; if so, go ahead and update, and if not , do nothing.
+
+    ```c
+    int CompareAndSwap(int *ptr, int expected, int new) {
+      int original = *ptr;
+      if (original == expected)
+        *ptr = new;
+      return original;
+    }
   ```
 
-- Compare-and-swap: similar to test-and-set but more powerful.
-  Idea: test whether the value at the address specified is expected; if so, go ahead and update, and if not , do nothing.
+  - Load-Linked and Store-Conditional: similar (correct, no guarantee for fairness, and efficient.)
+    Idea: load-linked operation simply fetch the data from memory to a register, and store-conditional does things in an atomic way.
 
-  ```c
-  int CompareAndSwap(int *ptr, int expected, int new) {
-    int original = *ptr;
-    if (original == expected)
-      *ptr = new;
-    return original;
-  }
-  ```
+  - Fetch-And-Add: (correct, guarantee for eventual fairness, and efficient.)
+    Idea: atomically increments a value while returning the old value at a particular address. uses a ticket and turn variable in combination to build a lock. when a thread wishes to acquire a lock, it first does an atomic fetch-and-add on the ticket value; that value is now considered this thread’s “turn” (myturn). The globally shared lock->turn is then used to determine which thread’s turn it is; when (myturn == turn) for a given thread, it is that thread’s turn to enter the critical section. Unlock is accomplished simply by incrementing the turn such that the next waiting thread (if there is one) can now enter the critical section.
 
-- Load-Linked and Store-Conditional: similar (correct, no guarantee for fairness, and efficient.)
-  Idea: load-linked operation simply fetch the data from memory to a register, and store-conditional does things in an atomic way.
+  - Yield: to better improve the efficiency problem introduced by the while spinning. `yield()` method simply turn the caller from the running state to the ready state, and thus promotes another thread to running.
 
-- Fetch-And-Add: (correct, guarantee for eventual fairness, and efficient.)
-  Idea: atomically increments a value while returning the old value at a particular address. uses a ticket and turn variable in combination to build a lock. when a thread wishes to acquire a lock, it first does an atomic fetch-and-add on the ticket value; that value is now considered this thread’s “turn” (myturn). The globally shared lock->turn is then used to determine which thread’s turn it is; when (myturn == turn) for a given thread, it is that thread’s turn to enter the critical section. Unlock is accomplished simply by incrementing the turn such that the next waiting thread (if there is one) can now enter the critical section.
+  - Priority inversion: other than the performance issue of a spinning lock, priority inversion is another interesting reason for not using spinning lock. The idea is simple: with lock, tasks with different priority might get their running priority messed up. For example, a high priority T3 is waiting for I/O, and thus low priority T1 gets run and hold the lock. Now the T3 finishes I/O and the scheduler will immediately suspend T1 and run T3. But if T3 requires the lock held by T1, the system will be locked indefinitely. Three solutions: avoid using spin locks; or temporarily boost the lower thread's priority; or make all threads have the same priority.
 
-- Yield: to better improve the efficiency problem introduced by the while spinning. `yield()` method simply turn the caller from the running state to the ready state, and thus promotes another thread to running.
+  - Using Queues (sleeping instead of spinning): yield has two problems, 1. the cost of a context switch (due to thread change by `yield()`) could be substantial and wasteful; and 2. the starvation problem, where a thread may get caught in an endless yield loop while other threads repeatedly enter and exit the critical section.
 
-- Priority inversion: other than the performance issue of a spinning lock, priority inversion is another interesting reason for not using spinning lock. The idea is simple: with lock, tasks with different priority might get their running priority messed up. For example, a high priority T3 is waiting for I/O, and thus low priority T1 gets run and hold the lock. Now the T3 finishes I/O and the scheduler will immediately suspend T1 and run T3. But if T3 requires the lock held by T1, the system will be locked indefinitely. Three solutions: avoid using spin locks; or temporarily boost the lower thread's priority; or make all threads have the same priority.
+  - Linux's two-phase locks: it realizes spinning can be useful, particularly if the lock is about to be released. Thus it spin once (or a fixed amount of time first) in the first-phase, hoping to acquire the lock. However, if the lock is not acquired during the first spin phase, a second phase enters, and the caller is put to sleep and only woken up when the lock becomes free later.
 
-- Using Queues (sleeping instead of spinning): yield has two problems, 1. the cost of a context switch (due to thread change by `yield()`) could be substantial and wasteful; and 2. the starvation problem, where a thread may get caught in an endless yield loop while other threads repeatedly enter and exit the critical section.
-
-- Linux's two-phase locks: it realizes spinning can be useful, particularly if the lock is about to be released. Thus it spin once (or a fixed amount of time first) in the first-phase, hoping to acquire the lock. However, if the lock is not acquired during the first spin phase, a second phase enters, and the caller is put to sleep and only woken up when the lock becomes free later.
-
-### Chap 29 - Lock-based Concurrent Data Structures
+## Chap 29 - Lock-based Concurrent Data Structures
+---
+> Here we go one step further in locks. We not just talk about different policies, but instead, we try to implement lock with basic data structures and see how lock prevents race condition there.
 
 Main goal: Adding locks to a data structure to make it us- able by threads makes the structure thread safe.
 
@@ -508,7 +541,8 @@ The idea is to use a couple of local counters (one per cpu) to avoid costly lock
 Hand-over-hand locking - a scalable linked list (or maybe):
 Idea: instead of lock the whole linked list whenever trying to `insert`, we can only lock the node. However, in practice, it is hard to make such a structure faster than the simple single lock approach, as the overheads of acquiring and releasing locks for each node of a list traversal is prohibitive.
 
-### Chapter 35 - Intro to Persistence
+## Chapter 35 - Intro to Persistence
+---
 
 Crux: How should I/O be integrated into systems? What are the general mechanisms? How can we make them efficient?
 
@@ -522,8 +556,8 @@ Livelock: when a huge stream of incoming packets each generate an interrupt, and
 
 (Buffered) coalescing: a device which needs to raise an interrupt first waits for a bit before delivering the interrupt to the CPU. While waiting, other requests may soon complete, and thus multiple interrupts can be coalesced into a single interrupt delivery, thus lowering the overhead of interrupt processing.
 
-### Chapter 36 - RAID
-
+## Chapter 36 - RAID
+---
 striping: the basic idea is that to spread the blocks of the array across the disks in a round-robin fashion.
 
 RAID mapping problem: given a logical block to read or write, how does the RAID know exactly which physical disk and offset to access?
